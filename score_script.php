@@ -18,8 +18,8 @@
 	require("config.php");
 	
 	// Connect to your server
-    $db = mysqli_connect($host,$user,$pass) or die (mysqli_error($db));
-	@mysqli_select_db($db,$dbname) or die (mysqli_error($db));
+    $db=mysql_connect($host,$user,$pass) or die (mysql_error());
+	@mysql_select_db($dbname) or die (mysql_error());
 		
 	//////////////////////////////////////////////////
 	// Check for the existing table if its not found create it
@@ -27,11 +27,11 @@
 	// They won't have to go thru the script and create the table
 	/////////////////////////////////////////////////
 
-	if(!mysqli_num_rows( mysqli_query($db,"SHOW TABLES LIKE '".$tname."'")))
+	if(!mysql_num_rows( mysql_query("SHOW TABLES LIKE '".$tname."'")))
 	{
 	$query = "CREATE TABLE `$tname` (`id` int(11) NOT NULL auto_increment,`gameid` varchar(255) NOT NULL,`playername` varchar(255) NOT NULL,`score` int(255) NOT NULL,`scoredate` varchar(255) NOT NULL,`md5` varchar(255) NOT NULL, PRIMARY KEY  (`id`)) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;";
 
-	$create_table = mysqli_query($db,$query)or die (mysqli_error($db));
+	$create_table = mysql_query($query)or die (mysql_error());
 	}
 	
 	///////////////////////////////////////////////////////
@@ -46,7 +46,7 @@
 	////////////////////////////////////////////////////////
 	// Run some checks on our gameid 
 	////////////////////////////////////////////////////////
-	$gameid_safe = mysqli_real_escape_string($db,$_GET["gameid"]);
+	$gameid_safe = mysql_real_escape_string($_GET["gameid"]);
 	// Check the gameid is numeric
 	// If its not numberic lets exit
 	if(!is_numeric($gameid_safe))
@@ -65,8 +65,8 @@
 	
 	// Strip out | marks submitted in the name or score
 	$playername_safe = str_replace("|","_",$_GET["playername"]);
-	$playername_safe = mysqli_real_escape_string($db,$playername_safe);
-	$score_safe = mysqli_real_escape_string($db,$_GET["score"]);
+	$playername_safe = mysql_real_escape_string($playername_safe);
+	$score_safe = mysql_real_escape_string($_GET["score"]);
 	$date = date('M d Y');
 		
 	// Check the score sent is is numeric
@@ -88,7 +88,7 @@
 	}
 	// Everything is cool -- Insert the data into the database
 	$query = "insert into $tname(gameid,playername,score,scoredate,md5) values ('$gameid_safe','$playername_safe','$score_safe','$date','$security_md5')";
-	$insert_the_data = mysqli_query($db,$query)or die(mysqli_error($db));
+	$insert_the_data = mysql_query($query)or die(mysql_error());
 	}
 		
 	///////////////////////////////////////////////////////
@@ -98,8 +98,8 @@
 	if ($gameid_safe)
 	{
     $query = "select * from $tname where gameid='$gameid_safe' order by score desc limit 10";
-	$view_data = mysqli_query($db,$query)or die(mysqli_error($db));
-	while($row_data = mysqli_fetch_array($view_data))
+	$view_data = mysql_query($query)or die(mysql_error());
+	while($row_data = mysql_fetch_array($view_data))
 		{
 		print($row_data["playername"]);
 		print "|";
@@ -113,17 +113,17 @@
 	// First check to see how many records we have for this game
   
 	$query1 ="select * from $tname where gameid = '$gameid_safe'";
-	$countresults = mysqli_query($db,$query1)or die(mysqli_error($db));
-	$countofdeletes = mysqli_num_rows($countresults);
-	if (mysqli_num_rows($countresults)>$score_number)
+	$countresults = mysql_query($query1)or die(mysql_error());
+	$countofdeletes = mysql_num_rows($countresults);
+	if (mysql_num_rows($countresults)>$score_number)
 		{
 		$query2 ="SELECT * FROM $tname WHERE gameid = '$gameid_safe' ORDER BY score DESC Limit $score_number,$countofdeletes";
-		$Get_data = mysqli_query($db,$query2)or die (mysqli_error($db));
-		while($row_data = mysqli_fetch_array($Get_data))
+		$Get_data = mysql_query($query2)or die (mysql_error());
+		while($row_data = mysql_fetch_array($Get_data))
 		{
 		$id_delete = $row_data["id"];
 		$query3 = "Delete from $tname where id = $id_delete";
-		$Delete_data = mysqli_query($db,$query3)or die (mysqli_error($db));
+		$Delete_data = mysql_query($query3)or die (mysql_error());
 		}
 		}
 	}
