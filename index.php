@@ -5,7 +5,7 @@
 <title>Score List</title>
 </head>
 <body>
-<?
+<?php
 echo "To Do a web listing of each game and its scores";
 ?>
 </body>
