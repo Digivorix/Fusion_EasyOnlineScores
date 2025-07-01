@@ -22,15 +22,22 @@
 	
 	// Check if the host string contains a port number
 	$hostStrArray = explode(":",$host);
+	
+	// Connect to your server 
 	if(count($hostStrArray) == 1)
 	{
-		// Connect to your server (default port)
+		// default port
 		$db = mysqli_connect($host,$user,$pass,$dbname) or die (mysqli_error($db));
 	}
 	elseif (count($hostStrArray) == 2)
 	{
-		// Connect to your server (user-specified port)
+		// user-specified port
 		$db = mysqli_connect($hostStrArray[0],$user,$pass,$dbname,$hostStrArray[1]) or die (mysqli_error($db));
+	}
+	else
+	{
+		// default port
+		$db = mysqli_connect($host,$user,$pass,$dbname) or die (mysqli_error($db));
 	}
 	
 	// Select database
